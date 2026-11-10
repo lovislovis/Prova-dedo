@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101820">
+<title>Rainbow Six: Tactical Clash</title>
+<style>
+:root{--bg:#101820;--panel:#1b2833;--panel2:#243541;--line:#3b5261;--text:#f1f5f7;--muted:#a9bac5;--gold:#e6b84a;--blue:#56a9e8;--red:#e36c62;--green:#65c69a}
+*{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{min-height:100dvh}button,select{font:inherit}button{border:0;border-radius:10px;padding:11px 15px;background:var(--gold);color:#18212a;font-weight:800;cursor:pointer}button.secondary{background:#344957;color:var(--text)}button.danger{background:#8d3f3b;color:white}button:disabled{opacity:.4;cursor:not-allowed}
+#app{max-width:1100px;margin:auto;padding:14px;min-height:100dvh;display:flex;flex-direction:column;gap:12px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:4px 0 12px}
+.brand{font-weight:950;letter-spacing:.04em;font-size:clamp(18px,4vw,27px)}.brand span{color:var(--gold)}.profile{font-size:12px;color:var(--muted);text-align:right}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav button{flex:1;min-width:100px;background:#293b47;color:var(--text)}nav button.active{background:var(--gold);color:#17212a}
+main{flex:1;min-height:0}.screen{display:none}.screen.active{display:block}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px}
+h1,h2,h3,p{margin-top:0}h1{font-size:clamp(23px,5vw,34px);margin-bottom:8px}h2{font-size:19px;margin-bottom:10px}h3{font-size:15px;margin-bottom:7px}
+.muted{color:var(--muted)}.small{font-size:12px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+.hero{padding:clamp(18px,5vw,35px);background:linear-gradient(135deg,#263d4b,#17232d 65%,#3d3420);border:1px solid var(--line);border-radius:18px}
+.hero p{max-width:620px;color:#c3d0d7;line-height:1.5}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.stat{background:#14212a;padding:10px;border-radius:10px;text-align:center}.stat b{display:block;font-size:20px;color:var(--gold)}
+.decktabs{display:flex;gap:8px;margin-bottom:10px}.decktabs button{flex:1}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}
+.card{background:linear-gradient(160deg,#304653,#1a2832);border:1px solid #526a78;border-radius:12px;padding:11px;display:flex;flex-direction:column;gap:7px;min-height:150px}
+.card.operator{border-top:4px solid var(--blue)}.card.defender{border-top:4px solid var(--red)}.card .name{font-weight:900;font-size:16px}.tag{display:inline-block;background:#17232c;color:#d9e4e9;border-radius:6px;padding:3px 6px;font-size:10px;width:max-content}.card p{font-size:12px;color:#c3d0d7;line-height:1.35;margin:0;flex:1}.cost{font-weight:900;color:var(--gold);font-size:12px}
+.zonegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.zone{background:#15232c;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:100px}.zone strong{display:block;margin-bottom:8px}.score{font-size:22px;font-weight:900}.mine{color:var(--blue)}.theirs{color:var(--red)}
+.hand{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}.hand .card{min-height:135px;cursor:pointer}.hand .card.selected{outline:3px solid var(--gold);transform:translateY(-2px)}
+.battlebar{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}.energy{font-weight:900;color:var(--gold)}
+.log{max-height:100px;overflow:auto;font-size:12px;color:var(--muted);line-height:1.5}
+.notice{padding:10px;border-radius:10px;background:#14212a;color:#c9d6dc;font-size:13px}
+select{background:#172630;color:white;border:1px solid var(--line);border-radius:9px;padding:10px}
+footer{text-align:center;color:#728692;font-size:10px;padding:6px}
+@media(max-width:520px){#app{padding:10px}.statgrid{gap:5px}.stat{padding:8px 4px}.zone{padding:8px;min-height:90px}.zone strong{font-size:12px}.score{font-size:18px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.hand{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="brand">RAINBOW SIX <span>TACTICAL CLASH</span></div><div class="profile" id="profile">Livello 1<br>0 crediti</div></header>
+<nav>
+<button class="active" data-screen="home">Home</button><button data-screen="deck">Mazzi</button><button data-screen="match">Partita</button><button data-screen="career">Carriera</button>
+</nav>
+<main>
+<section id="home" class="screen active">
+<div class="hero"><div class="tag">GIOCO DI CARTE TATTICO</div><h1>Pianifica. Rivela. Conquista.</h1><p>Una sfida tattica ispirata agli scontri tra attaccanti e difensori. Costruisci le tue squadre, scegli le carte in segreto e conquista almeno due delle tre zone in quattro turni.</p><div class="row"><button onclick="show('match')">Gioca una partita</button><button class="secondary" onclick="show('deck')">Modifica i mazzi</button></div><div class="statgrid"><div class="stat"><b id="homeWins">0</b><span class="small">Vittorie</span></div><div class="stat"><b id="homeXp">0</b><span class="small">Esperienza</span></div><div class="stat"><b id="homeCredits">0</b><span class="small">Crediti</span></div></div></div>
+<div class="panel"><h2>Come si gioca</h2><p class="muted small">La partita dura sempre 4 turni. Ogni turno ricevi energia crescente: seleziona una o più carte, poi rivela insieme alla CPU. Gli operatori e i gadget aggiungono punti alle zone. Vince chi controlla almeno 2 zone al termine del quarto turno.</p></div>
+</section>
+<section id="deck" class="screen">
+<div class="panel"><h2>Costruisci i tuoi mazzi</h2><p class="muted small">Ogni mazzo contiene 20 carte. Puoi inserire fino a 5 operatori distinti; le carte tattiche possono avere copie multiple.</p><div class="decktabs"><button id="attTab" class="active" onclick="setDeck('att')">Attaccanti</button><button id="defTab" class="secondary" onclick="setDeck('def')">Difensori</button></div><div class="row between"><b id="deckCount">20 / 20 carte</b><button class="secondary" onclick="resetDeck()">Ripristina mazzo</button></div></div>
+<div id="deckList" class="cards"></div>
+</section>
+<section id="match" class="screen">
+<div class="panel" id="setup"><h2>Preparazione partita</h2><p class="muted small">Scegli il tuo ruolo. La CPU userà il ruolo opposto.</p><div class="row"><label for="role">Il tuo ruolo</label><select id="role"><option value="att">Attaccante</option><option value="def">Difensore</option></select><label for="map">Mappa</label><select id="map"><option>Residenza</option><option>Banca</option><option>Chalet</option></select></div><p class="notice" style="margin-top:12px">Le partite si svolgono in 4 turni simultanei. Le mappe aggiuntive sono selezionabili in questa versione dimostrativa.</p><button onclick="startMatch()">Inizia partita</button></div>
+<div id="arena" style="display:none">
+<div class="panel"><div class="battlebar"><div><b id="turnLabel">Turno 1 / 4</b><div class="small muted" id="roleLabel"></div></div><div class="energy" id="energyLabel">Energia: 1</div><button class="secondary" onclick="quitMatch()">Esci</button></div></div>
+<div class="panel"><h3>Zone tattiche</h3><div class="zonegrid" id="zones"></div><p class="small muted" id="zoneHint" style="margin:10px 0 0">Scegli le carte da giocare, poi conferma.</p></div>
+<div class="panel"><div class="battlebar"><h3>La tua mano</h3><span class="small muted" id="selectedCost">Costo selezionato: 0</span></div><div id="hand" class="hand"></div><div class="row between" style="margin-top:12px"><span class="small muted">Seleziona carte entro il limite di energia.</span><button id="revealBtn" onclick="revealTurn()">Rivela turno</button></div></div>
+<div class="panel"><h3>Registro partita</h3><div class="log" id="battleLog">La partita è iniziata.</div></div>
+</div>
+<div id="result" class="panel" style="display:none"></div>
+</section>
+<section id="career" class="screen">
+<div class="panel"><h2>Carriera</h2><p class="muted">Progressi salvati automaticamente su questo dispositivo.</p><div class="statgrid"><div class="stat"><b id="careerLevel">1</b><span class="small">Livello</span></div><div class="stat"><b id="careerWins">0</b><span class="small">Vittorie</span></div><div class="stat"><b id="careerGames">0</b><span class="small">Partite</span></div></div></div>
+<div class="panel"><h3>Obiettivo iniziale</h3><p class="small muted">Completa partite per ottenere esperienza e crediti. Le ricompense vengono assegnate al termine di ogni incontro.</p><div class="notice">Tutte le ricompense sono ottenibili giocando: nessun acquisto richiesto.</div></div>
+</section>
+</main><footer>Prototipo fan-made non ufficiale. Rainbow Six è un marchio dei rispettivi proprietari.</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const ops=[
+{name:'Ash',side:'att',cost:2,power:4,kind:'Operatore',ability:'Breccia rapida: +2 punti se giocata nella zona Sito A.'},
+{name:'Thermite',side:'att',cost:3,power:6,kind:'Operatore',ability:'Carica esotermica: +2 punti in una zona contesa.'},
+{name:'Sledge',side:'att',cost:2,power:4,kind:'Operatore',ability:'Martello: +1 punto aggiuntivo.'},
+{name:'Twitch',side:'att',cost:2,power:3,kind:'Operatore',ability:'Drone shock: annulla 1 punto gadget avversario.'},
+{name:'Thatcher',side:'att',cost:2,power:3,kind:'Operatore',ability:'EMP: riduce di 2 la difesa avversaria nella zona.'},
+{name:'IQ',side:'att',cost:1,power:2,kind:'Operatore',ability:'Rilevamento: +2 punti se il difensore usa gadget.'},
+{name:'Mute',side:'def',cost:2,power:4,kind:'Operatore',ability:'Disturbatore: protegge la zona da un bonus nemico.'},
+{name:'Jäger',side:'def',cost:3,power:5,kind:'Operatore',ability:'ADS: +2 punti contro gadget offensivi.'},
+{name:'Kapkan',side:'def',cost:2,power:4,kind:'Operatore',ability:'Trappola: +2 punti se l’attaccante concentra la zona.'},
+{name:'Smoke',side:'def',cost:2,power:4,kind:'Operatore',ability:'Gas: +1 punto in ogni zona difesa.'},
+{name:'Rook',side:'def',cost:1,power:2,kind:'Operatore',ability:'Piastre: +2 punti difensivi nella zona.'},
+{name:'Doc',side:'def',cost:2,power:3,kind:'Operatore',ability:'Supporto: +1 punto a un alleato nella zona.'}
+];
+const tactics=[
+{name:'Drone di ricognizione',side:'att',cost:1,power:2,kind:'Gadget',ability:'Ricognizione: +1 punto se nella zona è presente un operatore.'},
+{name:'Carica da irruzione',side:'att',cost:2,power:3,kind:'Gadget',ability:'Aggiunge pressione alla zona scelta.'},
+{name:'Granata stordente',side:'att',cost:1,power:2,kind:'Gadget',ability:'Disorienta: +1 punto contro un difensore.'},
+{name:'Rinforzo',side:'def',cost:2,power:3,kind:'Gadget',ability:'Fortifica una zona difesa.'},
+{name:'Telecamera',side:'def',cost:1,power:2,kind:'Gadget',ability:'Sorveglianza: +1 punto se c’è un operatore alleato.'},
+{name:'Filo spinato',side:'def',cost:1,power:2,kind:'Gadget',ability:'Rallenta l’assalto: +1 punto difensivo.'}
+];
+const all=[...ops,...tactics];
+const defaults={att:['Ash','Thermite','Sledge','Twitch','Thatcher','IQ','Drone di ricognizione','Drone di ricognizione','Carica da irruzione','Granata stordente'],def:['Mute','Jäger','Kapkan','Smoke','Rook','Doc','Rinforzo','Rinforzo','Telecamera','Filo spinato']};
+let state=load(),deckSide='att',match=null;
+function load(){try{return JSON.parse(localStorage.getItem('r6tc_save'))||{att:[...defaults.att,...defaults.att],def:[...defaults.def,...defaults.def],wins:0,games:0,xp:0,credits:0}}catch(e){return {att:[...defaults.att,...defaults.att],def:[...defaults.def,...defaults.def],wins:0,games:0,xp:0,credits:0}}}
+function save(){localStorage.setItem('r6tc_save',JSON.stringify(state));updateProfile()}
+function level(){return 1+Math.floor(state.xp/100)}
+function updateProfile(){ $('profile').innerHTML=`Livello ${level()}<br>${state.credits} crediti`;$('homeWins').textContent=state.wins;$('homeXp').textContent=state.xp;$('homeCredits').textContent=state.credits;$('careerLevel').textContent=level();$('careerWins').textContent=state.wins;$('careerGames').textContent=state.games}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));if(id==='deck')renderDeck()}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.screen)));
+function setDeck(s){deckSide=s;$('attTab').className=s==='att'?'':'secondary';$('defTab').className=s==='def'?'':'secondary';renderDeck()}
+function renderDeck(){let d=state[deckSide];$('deckCount').textContent=`${d.length} / 20 carte`;let eligible=all.filter(c=>c.side===deckSide);$('deckList').innerHTML=eligible.map(c=>{let count=d.filter(x=>x===c.name).length;return `<article class="card ${deckSide==='att'?'operator':'defender'}"><span class="tag">${c.kind} · costo ${c.cost}</span><div class="name">${c.name}</div><p>${c.ability}</p><div class="row between"><span class="cost">Forza ${c.power} · x${count}</span><button style="padding:7px 10px" onclick="addCard('${c.name.replaceAll("'","\\'")}')">+</button></div></article>`}).join('')}
+function addCard(name){let d=state[deckSide];if(d.length>=20){alert('Il mazzo contiene già 20 carte.');return}let c=all.find(x=>x.name===name);if(c.kind==='Operatore'&&!d.includes(name)){let distinct=d.filter(n=>ops.some(o=>o.name===n));if(distinct.length>=5){alert('Puoi avere al massimo 5 operatori distinti nel mazzo.');return}}d.push(name);save();renderDeck()}
+function resetDeck(){if(!confirm('Vuoi ripristinare il mazzo iniziale?'))return;state[deckSide]=[...defaults[deckSide],...defaults[deckSide]];save();renderDeck()}
+function startMatch(){let role=$('role').value;if(state[role].length!==20){alert('Il tuo mazzo deve contenere esattamente 20 carte.');return}let enemy=role==='att'?'def':'att';match={role,enemy,turn:1,energy:1,selected:[],scores:[{mine:0,theirs:0},{mine:0,theirs:0},{mine:0,theirs:0}],logs:[],done:false,hand:drawHand(role)};$('setup').style.display='none';$('result').style.display='none';$('arena').style.display='block';$('roleLabel').textContent=`Tu: ${role==='att'?'Attaccante':'Difensore'} · CPU: ${enemy==='att'?'Attaccante':'Difensore'} · ${$('map').value}`;log('Partita iniziata: quattro turni, rivelazione simultanea.');renderBattle()}
+function drawHand(side){let pool=[...state[side]];let hand=[];for(let i=0;i<5&&pool.length;i++){let n=Math.floor(Math.random()*pool.length);hand.push(pool.splice(n,1)[0])}return hand}
+function log(s){match.logs.unshift(s);$('battleLog').innerHTML=match.logs.slice(0,10).map(x=>'• '+x).join('<br>')}
+function renderBattle(){if(!match)return;$('turnLabel').textContent=`Turno ${match.turn} / 4`;$('energyLabel').textContent=`Energia: ${match.energy}`;$('zones').innerHTML=match.scores.map((z,i)=>`<div class="zone"><strong>${['Sito A · Ingresso','Sito B · Uffici','Sito C · Archivio'][i]}</strong><div><span class="mine">${z.mine}</span> <span class="muted">—</span> <span class="theirs">${z.theirs}</span></div><div class="small muted">Tu — CPU</div></div>`).join('');$('hand').innerHTML=match.hand.map((name,i)=>{let c=all.find(x=>x.name===name);let selected=match.selected.includes(i);return `<div class="card ${c.side==='att'?'operator':'defender'} ${selected?'selected':''}" onclick="toggleCard(${i})"><span class="tag">${c.kind} · ${c.cost} energia</span><div class="name">${c.name}</div><p>${c.ability}</p><span class="cost">Forza ${c.power}</span></div>`}).join('');let cost=match.selected.reduce((s,i)=>s+all.find(c=>c.name===match.hand[i]).cost,0);$('selectedCost').textContent=`Costo selezionato: ${cost} / ${match.energy}`;$('revealBtn').disabled=match.done}
+function toggleCard(i){if(match.done)return;let at=match.selected.indexOf(i);if(at>=0)match.selected.splice(at,1);else{let c=all.find(x=>x.name===match.hand[i]);let total=match.selected.reduce((s,j)=>s+all.find(x=>x.name===match.hand[j]).cost,0);if(total+c.cost>match.energy){alert('Energia insufficiente.');return}match.selected.push(i)}renderBattle()}
+function revealTurn(){if(match.done)return;let mine=match.selected.map(i=>match.hand[i]);let enemyHand=drawHand(match.enemy);let enemyCards=[],energy=match.energy;while(enemyHand.length){let idx=Math.floor(Math.random()*enemyHand.length),c=all.find(x=>x.name===enemyHand[idx]);if(c.cost<=energy){enemyCards.push(enemyHand.splice(idx,1)[0]);energy-=c.cost}else enemyHand.splice(idx,1)}
+let myZone=Math.floor(Math.random()*3),enemyZone=Math.floor(Math.random()*3);
+mine.forEach(name=>{let c=all.find(x=>x.name===name);let bonus=0;if(name==='Ash'&&myZone===0)bonus=2;if(name==='Thermite'&&match.scores[myZone].theirs>0)bonus=2;if(name==='Sledge')bonus=1;if(name==='Rook')bonus=2;if(name==='Smoke')bonus=1;match.scores[myZone].mine+=c.power+bonus});
+enemyCards.forEach(name=>{let c=all.find(x=>x.name===name);let bonus=0;if(name==='Jäger')bonus=2;if(name==='Kapkan')bonus=2;if(name==='Rook')bonus=2;if(name==='Smoke')bonus=1;match.scores[enemyZone].theirs+=c.power+bonus});
+log(`Turno ${match.turn}: hai rivelato ${mine.length} carte; la CPU ${enemyCards.length}.`);match.turn++;match.selected=[];match.hand=drawHand(match.role);match.energy=Math.min(5,match.turn);if(match.turn>4)finishMatch();else renderBattle()}
+function finishMatch(){match.done=true;$('revealBtn').disabled=true;let mine=0,theirs=0;match.scores.forEach(z=>{if(z.mine>z.theirs)mine++;else if(z.theirs>z.mine)theirs++});let win=mine>=2;state.games++;state.xp+=win?60:30;state.credits+=win?40:20;if(win)state.wins++;save();$('result').style.display='block';$('result').innerHTML=`<h2>${win?'Vittoria!':'Partita conclusa'}</h2><p>Zone conquistate: tu ${mine} · CPU ${theirs}</p><p class="muted small">Ricompense: +${win?60:30} XP · +${win?40:20} crediti</p><button onclick="newMatch()">Nuova partita</button> <button class="secondary" onclick="show('home')">Home</button>`;log('Quarto turno completato. Partita terminata.')}
+function newMatch(){$('arena').style.display='none';$('setup').style.display='block';$('result').style.display='none';match=null}
+function quitMatch(){if(confirm('Vuoi abbandonare la partita?'))newMatch()}
+updateProfile();
+</script>
+</body></html>
